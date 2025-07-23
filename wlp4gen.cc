@@ -258,9 +258,9 @@ private:
     // Second pass: generate code
     void generateCode(const Node& node) {
 
-        // cout << ".import init" << endl;
-        // cout << ".import new" << endl;
-        // cout << ".import delete" << endl;
+        cout << ".import init" << endl;
+        cout << ".import new" << endl;
+        cout << ".import delete" << endl;
         cout << ".import print" << endl;
         if (node.rule == "start BOF procedures EOF") {
             generateStart(node);
@@ -346,26 +346,28 @@ private:
         // Initialize local variables
         generateLocalInits(proc);
         
-        // // Call init if needed
-        // if (needsInit) {
-        //     cout << "; call init" << endl;
-        //     cout << ".import init" << endl;
-        //     push("$31");
-        //     cout << "add $2, $0, $2" << endl;  // Second parameter (array size)
-        //     cout << "lis $5" << endl;
-        //     cout << ".word init" << endl;
-        //     cout << "jalr $5" << endl;
-        //     pop("$31");
-        // } else {
-        //     cout << "; call init with 0" << endl;
-        //     cout << ".import init" << endl;
-        //     push("$31");
-        //     cout << "add $2, $0, $0" << endl;  // 0 for non-array input
-        //     cout << "lis $5" << endl;
-        //     cout << ".word init" << endl;
-        //     cout << "jalr $5" << endl;
-        //     pop("$31");
-        // }
+        // Call init if needed
+        if (needsInit) {
+            cout << "; call init" << endl;
+            push("$31");
+            push("$2");
+            cout << "add $2, $0, $2" << endl;  // Second parameter (array size)
+            cout << "lis $5" << endl;
+            cout << ".word init" << endl;
+            cout << "jalr $5" << endl;
+            pop("$2");
+            pop("$31");
+        } else {
+            cout << "; call init with 0" << endl;
+            push("$31");
+            push("$2");
+            cout << "add $2, $0, $0" << endl;  // 0 for non-array input
+            cout << "lis $5" << endl;
+            cout << ".word init" << endl;
+            cout << "jalr $5" << endl;
+            pop("$2");
+            pop("$31");
+        }
         
         cout << "; end prologue" << endl;
     }
